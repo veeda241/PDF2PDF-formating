@@ -68,7 +68,9 @@
 	"bin": {
 		"pdf2json": "bin/pdf2json.js"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@rollup/rollup-win32-x64-msvc": "^4.59.0"
+	},
 	"bundleDependencies": [],
 	"devDependencies": {
 		"@eslint/js": "^9.37.0",
