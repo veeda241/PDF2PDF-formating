@@ -1,14 +1,14 @@
-# pdf2json
+# PDF2PDF-formating
 
-![GitHub stars](https://img.shields.io/github/stars/modesty/pdf2json?style=social)
-![GitHub forks](https://img.shields.io/github/forks/modesty/pdf2json?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/modesty/pdf2json?style=social)
-![GitHub repo size](https://img.shields.io/github/repo-size/modesty/pdf2json)
-![GitHub language count](https://img.shields.io/github/languages/count/modesty/pdf2json)
-![GitHub top language](https://img.shields.io/github/languages/top/modesty/pdf2json)
-![GitHub last commit](https://img.shields.io/github/last-commit/modesty/pdf2json?color=red)
+![GitHub stars](https://img.shields.io/github/stars/veeda241/PDF2PDF-formating?style=social)
+![GitHub forks](https://img.shields.io/github/forks/veeda241/PDF2PDF-formating?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/veeda241/PDF2PDF-formating?style=social)
+![GitHub repo size](https://img.shields.io/github/repo-size/veeda241/PDF2PDF-formating)
+![GitHub language count](https://img.shields.io/github/languages/count/veeda241/PDF2PDF-formating)
+![GitHub top language](https://img.shields.io/github/languages/top/veeda241/PDF2PDF-formating)
+![GitHub last commit](https://img.shields.io/github/last-commit/veeda241/PDF2PDF-formating?color=red)
 
-pdf2json is a [node.js](http://nodejs.org/) module that converts binary PDF to JSON and text. Built with [pdf.js](https://github.com/mozilla/pdf.js/), it extracts text content and interactive form elements for server-side processing and command-line use.
+PDF2PDF-formating is a [node.js](http://nodejs.org/) module that converts binary PDF to JSON and text. Built with [pdf.js](https://github.com/mozilla/pdf.js/), it extracts text content and interactive form elements for server-side processing and command-line use.
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/modestyqz?style=social)](https://x.com/modestyqz)
 
@@ -23,15 +23,15 @@ pdf2json is a [node.js](http://nodejs.org/) module that converts binary PDF to J
 
 ## Install
 
-> npm i pdf2json
+> npm i PDF2PDF-formating
 
 Or, install it globally:
 
-> npm i pdf2json -g
+> npm i PDF2PDF-formating -g
 
 To update with latest version:
 
-> npm update pdf2json -g
+> npm update PDF2PDF-formating -g
 
 To Run in RESTful Web Service or as command line Utility
 
@@ -96,7 +96,7 @@ To disable the first type, you could mock the console.log and console.warn APIs,
 
 ```javascript
 import fs from "fs";
-import PDFParser from "pdf2json"; 
+import PDFParser from "PDF2PDF-formating"; 
 
 const pdfParser = new PDFParser();
 
@@ -105,13 +105,13 @@ pdfParser.on("pdfParser_dataError", (errData) =>
 );
 pdfParser.on("pdfParser_dataReady", (pdfData) => {
  fs.writeFile(
-  "./pdf2json/test/F1040EZ.json",
+  "./PDF2PDF-formating/test/F1040EZ.json",
   JSON.stringify(pdfData),
   (data) => console.log(data)
  );
 });
 
-pdfParser.loadPDF("./pdf2json/test/pdf/fd/form/F1040EZ.pdf");
+pdfParser.loadPDF("./PDF2PDF-formating/test/pdf/fd/form/F1040EZ.pdf");
 ```
 
 Or, call directly with buffer:
@@ -138,7 +138,7 @@ pdfParser.on("error", (err) => console.error("Parser Error", err));
 
 ```javascript
 import fs from "fs";
-import PDFParser from "pdf2json"; 
+import PDFParser from "PDF2PDF-formating"; 
 
 const pdfParser = new PDFParser(this, 1);
 
@@ -147,7 +147,7 @@ pdfParser.on("pdfParser_dataError", (errData) =>
 );
 pdfParser.on("pdfParser_dataReady", (pdfData) => {
  fs.writeFile(
-  "./pdf2json/test/F1040EZ.content.txt",
+  "./PDF2PDF-formating/test/F1040EZ.content.txt",
   pdfParser.getRawTextContent(),
   () => {
    console.log("Done.");
@@ -155,14 +155,14 @@ pdfParser.on("pdfParser_dataReady", (pdfData) => {
  );
 });
 
-pdfParser.loadPDF("./pdf2json/test/pdf/fd/form/F1040EZ.pdf");
+pdfParser.loadPDF("./PDF2PDF-formating/test/pdf/fd/form/F1040EZ.pdf");
 ```
 
 - Parse a PDF then write a fields.json file that only contains interactive forms' fields information:
 
 ```javascript
 import fs from "fs";
-import PDFParser from "pdf2json"; 
+import PDFParser from "PDF2PDF-formating"; 
 
 const pdfParser = new PDFParser();
 
@@ -171,7 +171,7 @@ pdfParser.on("pdfParser_dataError", (errData) =>
 );
 pdfParser.on("pdfParser_dataReady", (pdfData) => {
  fs.writeFile(
-  "./pdf2json/test/F1040EZ.fields.json",
+  "./PDF2PDF-formating/test/F1040EZ.fields.json",
   JSON.stringify(pdfParser.getAllFieldsTypes()),
   () => {
    console.log("Done.");
@@ -179,21 +179,21 @@ pdfParser.on("pdfParser_dataReady", (pdfData) => {
  );
 });
 
-pdfParser.loadPDF("./pdf2json/test/pdf/fd/form/F1040EZ.pdf");
+pdfParser.loadPDF("./PDF2PDF-formating/test/pdf/fd/form/F1040EZ.pdf");
 ```
 
 Alternatively, you can pipe input and output streams: (requires v1.1.4)
 
 ```javascript
 import fs from "fs";
-import PDFParser from "pdf2json";
+import PDFParser from "PDF2PDF-formating";
 
 const inputStream = fs.createReadStream(
- "./pdf2json/test/pdf/fd/form/F1040EZ.pdf",
+ "./PDF2PDF-formating/test/pdf/fd/form/F1040EZ.pdf",
  { bufferSize: 64 * 1024 }
 );
 const outputStream = fs.createWriteStream(
- "./pdf2json/test/target/fd/form/F1040EZ.json"
+ "./PDF2PDF-formating/test/target/fd/form/F1040EZ.json"
 );
 
 inputStream
@@ -252,7 +252,7 @@ For additional output streams support:
 ```
 
 Note, if primary JSON parsing has exceptions, none of additional stream will be processed.
-See [p2jcmd.js](https://github.com/modesty/pdf2json/blob/master/lib/p2jcmd.js) for more details.
+See [p2jcmd.js](https://github.com/veeda241/PDF2PDF-formating/blob/master/lib/p2jcmd.js) for more details.
 
 ## API Reference
 
@@ -294,7 +294,7 @@ returns an array of field objects.
 
 Current parsed data has four main sub objects to describe the PDF document.
 
-- 'Transcoder': pdf2json version number
+- 'Transcoder': PDF2PDF-formating version number
 - 'Agency': the main text identifier for the PDF document. If Id.AgencyId present, it'll be same, otherwise it'll be set as document title; (_deprecated since v2.0.0, see notes below_)
 - 'Id': the XML meta data that embedded in PDF document (_deprecated since v2.0.0, see notes below_)
     - all forms attributes metadata are defined in "Custom" tab of "Document Properties" dialog in Acrobat Pro;
@@ -360,7 +360,7 @@ Each page object within 'Pages' array describes page elements and attributes wit
         - 'S': style index from style dictionary. More info about 'Style Dictionary' can be found at 'Dictionary Reference' section
         - 'TS': [fontFaceId, fontSize, 1/0 for bold, 1/0 for italic]
 
-v0.4.5 added support when fields attributes information is defined in external xml file. pdf2json will always try load field attributes xml file based on file name convention (pdfFileName.pdf's field XML file must be named pdfFileName_fieldInfo.xml in the same directory). If found, fields info will be injected.
+v0.4.5 added support when fields attributes information is defined in external xml file. PDF2PDF-formating will always try load field attributes xml file based on file name convention (pdfFileName.pdf's field XML file must be named pdfFileName_fieldInfo.xml in the same directory). If found, fields info will be injected.
 
 ### Dictionary Reference
 
@@ -496,7 +496,7 @@ v2.0.0: to access these dictionary programactically, do either
 
 ```javascript
 import { kColors, kFontFaces, kFontStyles } from "./lib/pdfconst.js"; // <-- pre 3.1.0
-import { kColors, kFontFaces, kFontStyles } from "pdf2json"; // <-- since 3.1.0
+import { kColors, kFontFaces, kFontStyles } from "PDF2PDF-formating"; // <-- since 3.1.0
 ```
 
 or via public static getters of PDFParser:
@@ -805,9 +805,9 @@ Another example of 'date' field:
 
 ## Text Style data without Style Dictionary
 
-v0.1.11 added text style information in addition to style dictionary. As we discussed earlier, the idea of style dictionary is to make the parsing result payload to be compact, but I found out the limited dictionary entries for font (face, size) and style (bold, italic) can not cover majority of text contents in PDFs, because of some styles are matched with closest dictionary entry, the client rendering will have mis-aligned, gapped or overlapped text. To solve this problem, pdf2json v0.1.11 extends the dictionary approach, all previous dictionary entries stay the same, but parsing result will not try to match to a closest style entry, instead, all exact text style will be returned in a TS filed.
+v0.1.11 added text style information in addition to style dictionary. As we discussed earlier, the idea of style dictionary is to make the parsing result payload to be compact, but I found out the limited dictionary entries for font (face, size) and style (bold, italic) can not cover majority of text contents in PDFs, because of some styles are matched with closest dictionary entry, the client rendering will have mis-aligned, gapped or overlapped text. To solve this problem, PDF2PDF-formating v0.1.11 extends the dictionary approach, all previous dictionary entries stay the same, but parsing result will not try to match to a closest style entry, instead, all exact text style will be returned in a TS filed.
 
-When the actual text style doesn't match any pre-defined style dictionary entry, the text style ID (S filed) will be set as -1. The actual text style will be set in a new field (TS) with or without a matched style dictionary entry ID. This means, if your client renderer works with pdf2json v0.1.11 and later, style dictionary ID can be ignored. Otherwise, previous client renderer can still work with style dictionary ID.
+When the actual text style doesn't match any pre-defined style dictionary entry, the text style ID (S filed) will be set as -1. The actual text style will be set in a new field (TS) with or without a matched style dictionary entry ID. This means, if your client renderer works with PDF2PDF-formating v0.1.11 and later, style dictionary ID can be ignored. Otherwise, previous client renderer can still work with style dictionary ID.
 
 The new TS filed is an Array with format as:
 
@@ -871,7 +871,7 @@ pdf.js is designed and implemented to run within browsers that have HTML5 suppor
 - Canvas (to draw lines, fills, colors, shapes in browser)
 - Others (like web fonts, canvas image, DOM manipulations, etc.)
 
-In order to run pdf.js in Node.js, we have to address those dependencies and also extend/modify the fork of pdf.js. Here below are some works implemented in this pdf2json module to enable pdf.js running with Node.js:
+In order to run pdf.js in Node.js, we have to address those dependencies and also extend/modify the fork of pdf.js. Here below are some works implemented in this PDF2PDF-formating module to enable pdf.js running with Node.js:
 
 - Global Variables
     - pdf.js' global objects (like PDFJS and globalScope) need to be wrapped in a node module's scope
@@ -886,13 +886,13 @@ In order to run pdf.js in Node.js, we have to address those dependencies and als
     - Interactive Forms elements: (in process to support them)
     - Leave out the support to embedded images
 
-After the changes and extensions listed above, this pdf2json node.js module will work either in a server environment ( I have a RESTful web service built with resitify and pdf2json, it's been running on an Amazon EC2 instance) or as a standalone command line tool (something similar to the Vows unit tests).
+After the changes and extensions listed above, this PDF2PDF-formating node.js module will work either in a server environment ( I have a RESTful web service built with resitify and PDF2PDF-formating, it's been running on an Amazon EC2 instance) or as a standalone command line tool (something similar to the Vows unit tests).
 
 More porting notes can be found at [Porting and Extending PDFJS to NodeJS](http://www.codeproject.com/Articles/568136/Porting-and-Extending-PDFJS-to-NodeJS).
 
 ## Known Issues
 
-This pdf2json module's output does not 100% maps from PDF definitions, some of them is because of time limitation I currently have, some others result from the 'dictionary' concept for the output. Given these known issues or unsupported features in current implementation, it allows me to contribute back to the open source community with the most important features implemented while leaving some improvement space for the future. All un-supported features listed below can be resolved technically some way or other, if your use case really requires them:
+This PDF2PDF-formating module's output does not 100% maps from PDF definitions, some of them is because of time limitation I currently have, some others result from the 'dictionary' concept for the output. Given these known issues or unsupported features in current implementation, it allows me to contribute back to the open source community with the most important features implemented while leaving some improvement space for the future. All un-supported features listed below can be resolved technically some way or other, if your use case really requires them:
 
 - Embedded content:
     - All embedded content are igored, current implementation focuses on static contents and interactive forms. Un-supported PDF embedded contents includes 'Images', 'Fonts' and other dynamic contents;
@@ -910,14 +910,14 @@ This pdf2json module's output does not 100% maps from PDF definitions, some of t
 
 ## Run As a Commandline Utility
 
-v0.1.15 added the capability to run pdf2json as command line tool. It enables the use case that when running the parser as a web service is not absolutely necessary while transcoding local pdf files to json format is desired. Because in some use cases, the PDF files are relatively stable with less updates, even though parsing it in a web service, the parsing result will remain the same json payload. In this case, it's better to run pdf2json as a command line tool to pre-process those pdf files, and deploy the parsing result json files onto web server, client side form renderer can work in the same way as before while eliminating server side process to achieve higher scalability.
+v0.1.15 added the capability to run PDF2PDF-formating as command line tool. It enables the use case that when running the parser as a web service is not absolutely necessary while transcoding local pdf files to json format is desired. Because in some use cases, the PDF files are relatively stable with less updates, even though parsing it in a web service, the parsing result will remain the same json payload. In this case, it's better to run PDF2PDF-formating as a command line tool to pre-process those pdf files, and deploy the parsing result json files onto web server, client side form renderer can work in the same way as before while eliminating server side process to achieve higher scalability.
 
-This command line utility is added as an extension, it doesn't break previous functionalities of running with a web service context. In my real project, I have a web service written in [restify.js to run pdf2json with a RESTful web service interface](https://github.com/modesty/p2jsvc), I also have the needs to pre-process some local static pdfs through the command line tool without changing the actual pdf2json module code.
+This command line utility is added as an extension, it doesn't break previous functionalities of running with a web service context. In my real project, I have a web service written in [restify.js to run PDF2PDF-formating with a RESTful web service interface](https://github.com/veeda241/p2jsvc), I also have the needs to pre-process some local static pdfs through the command line tool without changing the actual PDF2PDF-formating module code.
 
 To use the command line utility to transcode a folder or a file:
 
 ```javascript
-node pdf2json.js -f [input directory or pdf file]
+node PDF2PDF-formating.js -f [input directory or pdf file]
 ```
 
 When -f is a PDF file, it'll be converted to json file with the same name and saved in the same directory. If -f is a directory, it'll scan all ".pdf" files within the specified directory to transcode them one by one.
@@ -925,7 +925,7 @@ When -f is a PDF file, it'll be converted to json file with the same name and sa
 Optionally, you can specify the output directory: -o:
 
 ```javascript
-node pdf2json.js -f [input directory or pdf file] -o [output directory]
+node PDF2PDF-formating.js -f [input directory or pdf file] -o [output directory]
 ```
 
 The output directory must exist, otherwise, it'll exit with an error.
@@ -934,35 +934,35 @@ Additionally, you can also use -v or --version to show version number or to disp
 
 ### Note
 
-v0.2.1 added the ability to run pdf2json directly from the command line without specifying "node" and the path of pdf2json. To run this self-executable in command line, first install pdf2json globally:
+v0.2.1 added the ability to run PDF2PDF-formating directly from the command line without specifying "node" and the path of PDF2PDF-formating. To run this self-executable in command line, first install PDF2PDF-formating globally:
 
 ```javascript
-npm install pdf2json -g
+npm install PDF2PDF-formating -g
 ```
 
 Then run it in command line:
 
 ```javascript
-pdf2json -f [input directory or pdf file]
+PDF2PDF-formating -f [input directory or pdf file]
 ```
 
 or
 
 ```javascript
-pdf2json -f [input directory or pdf file] -o [output directory]
+PDF2PDF-formating -f [input directory or pdf file] -o [output directory]
 ```
 
-v0.5.4 added "-s" or "--silent" command line argument to suppress informative logging output. When using pdf2json as a command line tool, the default verbosity is 5 (INFOS). While when running as a web service, default verbosity is 9 (ERRORS).
+v0.5.4 added "-s" or "--silent" command line argument to suppress informative logging output. When using PDF2PDF-formating as a command line tool, the default verbosity is 5 (INFOS). While when running as a web service, default verbosity is 9 (ERRORS).
 Examples to suppress logging info from command line:
 
 ```javascript
-pdf2json -f [input directory or pdf file] -o [output directory] -s
+PDF2PDF-formating -f [input directory or pdf file] -o [output directory] -s
 ```
 
 or
 
 ```javascript
-pdf2json -f [input directory or pdf file] -o [output directory] --silent
+PDF2PDF-formating -f [input directory or pdf file] -o [output directory] --silent
 ```
 
 Examples to turn on logging info in web service:
@@ -1000,7 +1000,7 @@ If all you need is the textual content of the PDF, "-c" essentially converts PDF
 
 ## Run Unit Test (commandline)
 
-It takes less than 1 minutes for pdf2json to parse 261 PDFs under `test/pdf` directory. Usually, it takes about 40 seconds or so to parses all of them. Besides the primary JSON for each PDF, it also generates text content JSON and form fields JSON file (by `-c` and `-t` parameters) for further testing.
+It takes less than 1 minutes for PDF2PDF-formating to parse 261 PDFs under `test/pdf` directory. Usually, it takes about 40 seconds or so to parses all of them. Besides the primary JSON for each PDF, it also generates text content JSON and form fields JSON file (by `-c` and `-t` parameters) for further testing.
 
 The 265 PDFs are all fill-able tax forms from government agencies for tax year 2013, including 165 federal forms, 23 efile instructions and 9 other state tax forms.
 
@@ -1038,7 +1038,7 @@ Or, from `npm scripts`:
  npm test
 ```
 
-Some testing PDFs are provided by bug reporters, like the "unsupported encryption" ([#43](https://github.com/modesty/pdf2json/issues/43)), "read property num from undefined" ([#26](https://github.com/modesty/pdf2json/issues/26)), and "excessive line breaks in text content" ([#28](https://github.com/modesty/pdf2json/issues/28)), their PDFs are all stored in `test/pdf/misc` directory. To run tests against these community contributed PDFs, run commandline:
+Some testing PDFs are provided by bug reporters, like the "unsupported encryption" ([#43](https://github.com/veeda241/PDF2PDF-formating/issues/43)), "read property num from undefined" ([#26](https://github.com/veeda241/PDF2PDF-formating/issues/26)), and "excessive line breaks in text content" ([#28](https://github.com/veeda241/PDF2PDF-formating/issues/28)), their PDFs are all stored in `test/pdf/misc` directory. To run tests against these community contributed PDFs, run commandline:
 
 ```terminal
  npm run-script test-misc
@@ -1046,14 +1046,14 @@ Some testing PDFs are provided by bug reporters, like the "unsupported encryptio
 
 ## Upgrade to ~v1.x.x
 
-If you have an early version of pdf2json, please remove your local `node_modules` directory and re-run `npm install` to upgrade to <pdf2json@1.0.x>.
+If you have an early version of PDF2PDF-formating, please remove your local `node_modules` directory and re-run `npm install` to upgrade to <PDF2PDF-formating@1.0.x>.
 
 v1.x.x upgraded dependency packages, removed some unnecessary dependencies, started to assumes ES6 / ES2015 with node ~v4.x. More PDFs are added for unit testing.
 
 **Note:**
-pdf2json has been in production for over 3 years, it's pretty reliable and solid when parsing hundreds (sometimes tens of thousands) of PDF forms every day, thanks to everybody's help.
+PDF2PDF-formating has been in production for over 3 years, it's pretty reliable and solid when parsing hundreds (sometimes tens of thousands) of PDF forms every day, thanks to everybody's help.
 
-Starting v1.0.3, I'm trying to address a long over due annoying problem on [broken text blocks](https://github.com/modesty/pdf2json/issues/18). It's the biggest problem that hinders the efficiency of PDF content creation in our projects. Although the root cause lies in the original PDF streams, since the client doesn't render JSON character by character, it's a problem often appears in final rendered web content. We had to work around it by manually merge those text blocks. With the solution in v1.0.x, the need for manual text block merging is greatly reduced.
+Starting v1.0.3, I'm trying to address a long over due annoying problem on [broken text blocks](https://github.com/veeda241/PDF2PDF-formating/issues/18). It's the biggest problem that hinders the efficiency of PDF content creation in our projects. Although the root cause lies in the original PDF streams, since the client doesn't render JSON character by character, it's a problem often appears in final rendered web content. We had to work around it by manually merge those text blocks. With the solution in v1.0.x, the need for manual text block merging is greatly reduced.
 
 The solution is to put to a post-parsing process stage to identify and auto-merge those adjacent blocks. It's not ideal, but works in most of my tests with those 261 PDFs underneath test directory.
 
@@ -1065,11 +1065,11 @@ In order to support this auto merging capability, text block objects have an add
 
 - v4.0.0 introduces several important changes that may affect existing implementations:
 
-    - **Text encoding removed**: Text in JSON output is no longer URI-encoded (fixes [#385](https://github.com/modesty/pdf2json/issues/385)). Chinese, CJK, and other Unicode characters now display directly as UTF-8 instead of percent-encoded strings. If your application was decoding text with `decodeURIComponent()`, you should remove that step.
+    - **Text encoding removed**: Text in JSON output is no longer URI-encoded (fixes [#385](https://github.com/veeda241/PDF2PDF-formating/issues/385)). Chinese, CJK, and other Unicode characters now display directly as UTF-8 instead of percent-encoded strings. If your application was decoding text with `decodeURIComponent()`, you should remove that step.
 
-    - **Text block spacing improvements**: Text block gaps and space widths are now calculated from fontMatrix for more accurate spacing (fixes [#355](https://github.com/modesty/pdf2json/issues/355), [#361](https://github.com/modesty/pdf2json/issues/361), [#319](https://github.com/modesty/pdf2json/issues/319)). This uses actual glyph-based width calculation with proper coordinate system handling and applies textHScale for compressed/expanded text. The spacing in both content.txt and JSON output will be more accurate but may differ from previous versions.
+    - **Text block spacing improvements**: Text block gaps and space widths are now calculated from fontMatrix for more accurate spacing (fixes [#355](https://github.com/veeda241/PDF2PDF-formating/issues/355), [#361](https://github.com/veeda241/PDF2PDF-formating/issues/361), [#319](https://github.com/veeda241/PDF2PDF-formating/issues/319)). This uses actual glyph-based width calculation with proper coordinate system handling and applies textHScale for compressed/expanded text. The spacing in both content.txt and JSON output will be more accurate but may differ from previous versions.
 
-    - **Text coordinate fixes**: Text block coordinate calculations have been corrected (fixes [#408](https://github.com/modesty/pdf2json/issues/408)), which may result in slightly different positioning values compared to v3.x.
+    - **Text coordinate fixes**: Text block coordinate calculations have been corrected (fixes [#408](https://github.com/veeda241/PDF2PDF-formating/issues/408)), which may result in slightly different positioning values compared to v3.x.
 
     - **Node.js version requirement**: Minimum Node.js version is now 20.18.0 or higher.
 
@@ -1082,7 +1082,7 @@ In order to support this auto merging capability, text block objects have an add
     - event "pdfParser_dataError": {"parserError": errObj}
     - event "pdfParser_dataReady": {"formImage": parseOutput} **note**: "formImage" is removed from v2.0.0, see breaking changes for details.
 
-- v1.0.8 fixed [issue 27](https://github.com/modesty/pdf2json/issues/27), it converts x coordinate with the same ratio as y, which is 24 (96/4), rather than 8.7 (96/11), please adjust client renderer accordingly when position all elements' x coordinate.
+- v1.0.8 fixed [issue 27](https://github.com/veeda241/PDF2PDF-formating/issues/27), it converts x coordinate with the same ratio as y, which is 24 (96/4), rather than 8.7 (96/11), please adjust client renderer accordingly when position all elements' x coordinate.
 
 ## Major Refactoring
 
@@ -1130,25 +1130,25 @@ $ node --version
 v4.5.0
 ```
 
-- Proceed with the install of pdf2json as described above
+- Proceed with the install of PDF2PDF-formating as described above
 
 ```terminal
-$ npm install -g pdf2json
-npm http GET https://registry.npmjs.org/pdf2json
-npm http 304 https://registry.npmjs.org/pdf2json
-/usr/bin/pdf2json -> /usr/lib/node_modules/pdf2json/bin/pdf2json
-pdf2json@0.6.1 /usr/lib/node_modules/pdf2json
+$ npm install -g PDF2PDF-formating
+npm http GET https://registry.npmjs.org/PDF2PDF-formating
+npm http 304 https://registry.npmjs.org/PDF2PDF-formating
+/usr/bin/PDF2PDF-formating -> /usr/lib/node_modules/PDF2PDF-formating/bin/PDF2PDF-formating
+PDF2PDF-formating@0.6.1 /usr/lib/node_modules/PDF2PDF-formating
 
-$ which pdf2json
-/usr/bin/pdf2json
+$ which PDF2PDF-formating
+/usr/bin/PDF2PDF-formating
 
-$ pdf2json --version
+$ PDF2PDF-formating --version
 0.6.2
 ```
 
 ## Run in a RESTful Web Service
 
-More info can be found at [Restful Web Service for pdf2json.](https://github.com/modesty/p2jsvc)
+More info can be found at [Restful Web Service for PDF2PDF-formating.](https://github.com/veeda241/p2jsvc)
 
 ## Contribution
 
@@ -1156,10 +1156,10 @@ Participating in this project, you are expected to honor [open code of conduct](
 
 ## License
 
-Licensed under the [Apache License Version 2.0](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt).
+Licensed under the [Apache License Version 2.0](https://github.com/veeda241/PDF2PDF-formating/blob/scratch/quadf-forms/license.txt).
 
 ## Support
 
-I'm currently running this project in my spare time. Thanks all for your [stars](https://github.com/modesty/pdf2json/stargazers) and [supports](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=modestyZ%40gmail%2ecom&lc=GB&item_name=modesty%20zhang&item_number=git%40github%2ecom%3amodesty%2fpdf2json%2egit&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted).
+I'm currently running this project in my spare time. Thanks all for your [stars](https://github.com/veeda241/PDF2PDF-formating/stargazers) and [supports](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=modestyZ%40gmail%2ecom&lc=GB&item_name=modesty%20zhang&item_number=git%40github%2ecom%3amodesty%2fpdf2json%2egit&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted).
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/modestyqz?style=social)](https://x.com/modestyqz)

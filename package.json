@@ -1,11 +1,12 @@
 {
-	"name": "pdf2json",
+	"name": "pdf2pdf-formating",
 	"version": "4.0.2",
 	"description": "PDF file parser that converts PDF binaries to JSON and text, powered by porting a fork of PDF.JS to Node.js",
 	"keywords": [
 		"pdf",
 		"pdf parser",
 		"pdf2json",
+		"pdf2pdf-formating",
 		"convert pdf to json",
 		"convert pdf form to json",
 		"server side PDF parser",
@@ -24,10 +25,10 @@
 		"email": "modestyz@hotmail.com",
 		"url": "https://www.google.com/search?q=modesty+zhang+site%3Acodeproject.com"
 	},
-	"homepage": "https://github.com/modesty/pdf2json",
+	"homepage": "https://github.com/veeda241/PDF2PDF-formating",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/modesty/pdf2json.git"
+		"url": "git://github.com/veeda241/PDF2PDF-formating.git"
 	},
 	"main": "./dist/pdfparser.cjs",
 	"module": "./dist/pdfparser.js",
@@ -101,10 +102,10 @@
 	],
 	"contributors": [],
 	"bugs": {
-		"url": "http://github.com/modesty/pdf2json/issues"
+		"url": "http://github.com/veeda241/PDF2PDF-formating/issues"
 	},
 	"license": "Apache-2.0",
-	"readme": "https://github.com/modesty/pdf2json/blob/master/readme.md",
+	"readme": "https://github.com/veeda241/PDF2PDF-formating/blob/master/readme.md",
 	"exports": {
 		".": {
 			"types": "./dist/pdfparser.d.ts",
@@ -124,3 +125,4 @@
 		"license.txt"
 	]
 }
+
