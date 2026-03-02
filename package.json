@@ -72,6 +72,8 @@
 	"dependencies": {
 		"@rollup/rollup-win32-x64-msvc": "^4.59.0",
 		"docx": "^9.6.0",
+		"express": "^5.2.1",
+		"multer": "^2.1.0",
 		"puppeteer": "^24.37.5"
 	},
 	"bundleDependencies": [],
