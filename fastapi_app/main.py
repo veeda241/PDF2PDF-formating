@@ -17,6 +17,8 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
+from semantic_field_matcher import fill_pdf_from_json
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 NODE_BINARY = os.getenv("NODE_BINARY", "node")
 PDF_TO_JSON_SCRIPT = REPO_ROOT / "bin" / "pdf2json.js"
@@ -654,6 +656,7 @@ def root() -> dict[str, str]:
         "health": "/health",
         "pdfToJson": "/api/upload",
         "jsonToPdf": "/api/json-to-pdf",
+        "jsonToFilledPdf": "/api/json-to-filled-pdf",
         "pdfToFilledPdf": "/api/pdf-to-filled-pdf",
     }
 
@@ -727,6 +730,58 @@ async def json_to_pdf(
 
         if not output_pdf.exists():
             raise HTTPException(status_code=500, detail="PDF output was not created.")
+
+        return FileResponse(
+            path=str(output_pdf),
+            media_type="application/pdf",
+            filename=output_pdf.name,
+            background=BackgroundTask(shutil.rmtree, temp_dir, ignore_errors=True),
+        )
+    except HTTPException:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise
+    except Exception as exc:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/json-to-filled-pdf")
+async def json_to_filled_pdf(
+    source_json: UploadFile = File(...),
+    target_pdf: UploadFile = File(...),
+    output_name: str | None = Form(default=None),
+) -> FileResponse:
+    if not source_json.filename:
+        raise HTTPException(status_code=400, detail="No source JSON filename provided.")
+    if not source_json.filename.lower().endswith(".json"):
+        raise HTTPException(status_code=400, detail="Only JSON files are allowed for the source JSON.")
+    if not target_pdf.filename:
+        raise HTTPException(status_code=400, detail="No target PDF filename provided.")
+    if not target_pdf.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed for the target PDF.")
+
+    temp_dir = Path(tempfile.mkdtemp(prefix="json_fill_"))
+
+    try:
+        input_json = temp_dir / Path(source_json.filename).name
+        input_pdf = temp_dir / Path(target_pdf.filename).name
+
+        await save_upload_file(source_json, input_json)
+        await save_upload_file(target_pdf, input_pdf)
+
+        if output_name:
+            desired_name = Path(output_name).name
+        else:
+            desired_name = f"{input_pdf.stem}_filled.pdf"
+
+        if not desired_name.lower().endswith(".pdf"):
+            desired_name = f"{Path(desired_name).stem}.pdf"
+
+        output_pdf = temp_dir / desired_name
+        fill_pdf_from_json(str(input_json), str(input_pdf), str(output_pdf))
+
+        if not output_pdf.exists():
+            raise HTTPException(status_code=500, detail="Filled PDF output was not created.")
 
         return FileResponse(
             path=str(output_pdf),

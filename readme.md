@@ -69,6 +69,7 @@ npm run build
 |---|---|
 | `puppeteer` | Headless Chrome for HTML → PDF conversion |
 | `docx` | Microsoft Word (.docx) file generation |
+| `pypdf` | AcroForm filling helper used by the semantic matcher and JSON-to-filled-PDF route |
 | `pdf2json` (core) | PDF parsing engine (built-in, based on pdf.js) |
 
 ---
@@ -136,10 +137,13 @@ Available test routes:
 
 - `POST /api/upload` uploads a PDF and returns the parsed JSON payload.
 - `POST /api/json-to-pdf` uploads a pdf2json JSON file and returns a rebuilt PDF.
+- `POST /api/json-to-filled-pdf` uploads a source JSON file plus a target PDF and fills the target using semantic field matching.
 - `POST /api/pdf-to-filled-pdf` uploads a source/format PDF plus a target PDF, derives JSON from both files, and fills the target by matching field IDs, normalized question labels, and nearby visible labels.
 - `GET /health` checks that the service is running.
 
 The filled-PDF route first tries exact field IDs, then normalized question labels, then a conservative fuzzy label match. It works best when the PDFs come from the same form family, but it no longer depends on identical wording for common questions such as name, phone number, email, or address.
+
+The JSON-to-filled-PDF route uses the reusable [semantic_field_matcher.py](semantic_field_matcher.py) module. It is useful when you already have source values in pdf2json format and want the server to transfer them into a target AcroForm PDF.
 
 Filled-PDF matching behavior:
 
@@ -147,6 +151,22 @@ Filled-PDF matching behavior:
 2. Question labels are normalized so common variants like `what is your name`, `name:`, and `fullname` resolve to the same key.
 3. Conservative fuzzy matching handles close variants such as `phone no`, `contact number`, or `current address`.
 4. If the PDF has visible labels but no real AcroForm fields, the server places overlay values next to the matched label.
+
+Standalone semantic matcher usage:
+
+```bash
+python semantic_field_matcher.py source_values.json target_form.pdf filled_output.pdf
+```
+
+You can also import it directly:
+
+```python
+from semantic_field_matcher import FieldMatcher, fill_pdf_from_json
+
+matcher = FieldMatcher(extra_fields={
+  "name": ["respondent name", "claimant name"],
+})
+```
 
 ---
 
@@ -247,6 +267,7 @@ PDF2PDF-formating/
 ├── pdf_to_docx.mjs         # PDF → DOCX automated converter
 ├── pdf_to_pdf.mjs          # PDF → PDF styled converter
 ├── json_to_pdf.mjs         # JSON → PDF exact layout recreator
+├── semantic_field_matcher.py # Semantic label matcher + JSON-to-PDF filler
 ├── fastapi_app/            # FastAPI test server
 ├── requirements.txt       # Python dependencies for FastAPI testing
 ├── pdfparser.js             # Main parser entry point
