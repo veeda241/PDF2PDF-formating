@@ -8,7 +8,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/veeda241/PDF2PDF-formating)
 ![GitHub last commit](https://img.shields.io/github/last-commit/veeda241/PDF2PDF-formating?color=red)
 
-**PDF2PDF-Formating** is a powerful [Node.js](http://nodejs.org/) toolkit that parses PDF documents and reproduces them in multiple output formats — **PDF (exact replica)**, **DOCX (Microsoft Word)**, **HTML**, and **JSON**. Built on top of [pdf.js](https://github.com/mozilla/pdf.js/), it extracts text content, fills/backgrounds, fonts, colors, and interactive form elements, then faithfully reconstructs the document preserving the original layout.
+**PDF2PDF-Formating** is a powerful [Node.js](http://nodejs.org/) toolkit that parses PDF documents and reproduces them in multiple output formats — **PDF (exact replica)**, **DOCX (Microsoft Word)**, **HTML**, and **JSON**. Built on top of [pdf.js](https://github.com/mozilla/pdf.js/), it extracts text content, fills/backgrounds, fonts, colors, and interactive form elements, then faithfully reconstructs the document preserving the original layout. It also supports a filled-PDF workflow that transfers values from a source PDF to a target PDF by matching field IDs and question labels.
 
 ---
 
@@ -20,6 +20,7 @@
 | **PDF → DOCX** | Automated conversion to Microsoft Word with heading detection, table reconstruction, and bullet point formatting |
 | **PDF → HTML** | Rich HTML output with professional styling, gradient banners, color-coded badges, and responsive tables |
 | **PDF → JSON** | Structured JSON extraction of all textual content and interactive form fields |
+| **PDF → Filled PDF** | Transfers values from a source PDF to a target PDF using field IDs, normalized question labels, and conservative fuzzy label matching |
 | **Text Extraction** | Extracts raw text content from PDF documents |
 | **Form Field Parsing** | Parses interactive form fields (checkboxes, dropdowns, text inputs) for data capture |
 | **Zero Core Dependencies** | Core PDF parser is completely dependency-free (pure JavaScript) |
@@ -32,9 +33,11 @@
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [FastAPI Test Server](#fastapi-test-server)
 - [Conversion Tools](#conversion-tools)
   - [PDF → PDF (Exact Format)](#pdf--pdf-exact-format)
   - [PDF → DOCX (Word)](#pdf--docx-word)
+  - [JSON → PDF](#json--pdf)
   - [PDF → PDF (Styled)](#pdf--pdf-styled)
 - [Project Structure](#project-structure)
 - [How It Works](#how-it-works)
@@ -96,6 +99,55 @@ npx pdf2json -f "path/to/input.pdf" -o "path/to/output/"
 
 Output: `input.json` (in output directory)
 
+### 4. JSON → PDF (Rebuild from Parsed JSON)
+
+```bash
+node json_to_pdf.mjs "path/to/input.json" "output.pdf"
+
+# Or via npm script
+npm run json-to-pdf -- "path/to/input.json" "output.pdf"
+```
+
+Output: a new PDF recreated from the pdf2json JSON layout. If you omit the output path, the PDF is written next to the JSON file.
+
+If your JSON includes filled form fields in `Fields[].V` or checked boxes in `Boxsets[].boxes[].checked`, the renderer will place those values into the output PDF as well.
+
+### 5. FastAPI Test Server
+
+The old browser frontend has been removed. Use the FastAPI app for API testing instead:
+
+```bash
+# Create a local virtual environment once
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start the API server through the repo script
+npm run fastapi
+```
+
+Open `http://localhost:8000/docs` to test the API endpoints in the built-in Swagger UI.
+
+If you already created `.venv` and installed the requirements, you can jump straight to `npm run fastapi`.
+
+Available test routes:
+
+- `POST /api/upload` uploads a PDF and returns the parsed JSON payload.
+- `POST /api/json-to-pdf` uploads a pdf2json JSON file and returns a rebuilt PDF.
+- `POST /api/pdf-to-filled-pdf` uploads a source/format PDF plus a target PDF, derives JSON from both files, and fills the target by matching field IDs, normalized question labels, and nearby visible labels.
+- `GET /health` checks that the service is running.
+
+The filled-PDF route first tries exact field IDs, then normalized question labels, then a conservative fuzzy label match. It works best when the PDFs come from the same form family, but it no longer depends on identical wording for common questions such as name, phone number, email, or address.
+
+Filled-PDF matching behavior:
+
+1. Exact field ID matches are used first when both PDFs expose the same field IDs.
+2. Question labels are normalized so common variants like `what is your name`, `name:`, and `fullname` resolve to the same key.
+3. Conservative fuzzy matching handles close variants such as `phone no`, `contact number`, or `current address`.
+4. If the PDF has visible labels but no real AcroForm fields, the server places overlay values next to the matched label.
+
 ---
 
 ## Conversion Tools
@@ -150,6 +202,22 @@ node pdf_to_docx.mjs "input.pdf"
 node pdf_to_docx.mjs "input.pdf" "output.docx"
 ```
 
+### JSON → PDF
+
+**Script:** `json_to_pdf.mjs`
+
+Recreates a PDF from a pdf2json-format JSON file by rendering the JSON text, fills, and line elements into a new PDF.
+
+```bash
+# Basic usage
+node json_to_pdf.mjs "input.json"
+
+# Custom output path
+node json_to_pdf.mjs "input.json" "output.pdf"
+```
+
+This is the reverse of the PDF-to-JSON step and is useful when you want to turn extracted JSON data back into a PDF file.
+
 ---
 
 ### PDF → PDF (Styled)
@@ -178,6 +246,9 @@ PDF2PDF-formating/
 ├── pdf_to_pdf_exact.mjs    # PDF → PDF exact format reproducer
 ├── pdf_to_docx.mjs         # PDF → DOCX automated converter
 ├── pdf_to_pdf.mjs          # PDF → PDF styled converter
+├── json_to_pdf.mjs         # JSON → PDF exact layout recreator
+├── fastapi_app/            # FastAPI test server
+├── requirements.txt       # Python dependencies for FastAPI testing
 ├── pdfparser.js             # Main parser entry point
 ├── package.json             # Project config & scripts
 │
