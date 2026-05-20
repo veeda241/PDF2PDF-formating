@@ -50,6 +50,8 @@
 		"parse-rectFix": "./bin/pdf2json.js -f ./test/pdf/misc/pr298_rect_fix_from_upstream.pdf -o ./test/target/misc",
 		"parse-e": "./bin/pdf2json.js -f ./test/pdf/misc/i418_precompilato_fake.pdf -o ./test/target/misc -c",
 		"json-to-pdf": "node ./json_to_pdf.mjs",
+		"style:pdf": ".\\.venv\\Scripts\\python.exe styled_pdf_converter.py",
+		"fill:pdf": ".\\.venv\\Scripts\\python.exe pdf_detail_mapper.py",
 		"fastapi": ".\\.venv\\Scripts\\python.exe -m uvicorn fastapi_app.main:app --reload --host 0.0.0.0 --port 8000",
 		"build:rollup": "npx rollup -c ./rollup.config.js",
 		"build:bundle-pdfjs-base": "node rollup/bundle-pdfjs-base.js",

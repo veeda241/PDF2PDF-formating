@@ -17,7 +17,9 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
+from pdf_detail_mapper import fill_styled_pdf_from_detail_pdf
 from semantic_field_matcher import fill_pdf_from_json
+from styled_pdf_converter import convert_pdf_to_styled_pdf
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 NODE_BINARY = os.getenv("NODE_BINARY", "node")
@@ -656,6 +658,7 @@ def root() -> dict[str, str]:
         "health": "/health",
         "pdfToJson": "/api/upload",
         "jsonToPdf": "/api/json-to-pdf",
+        "pdfToStyledPdf": "/api/pdf-to-styled-pdf",
         "jsonToFilledPdf": "/api/json-to-filled-pdf",
         "pdfToFilledPdf": "/api/pdf-to-filled-pdf",
     }
@@ -745,6 +748,50 @@ async def json_to_pdf(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.post("/api/pdf-to-styled-pdf")
+async def pdf_to_styled_pdf(
+    pdf: UploadFile = File(...),
+    output_name: str | None = Form(default=None),
+) -> FileResponse:
+    if not pdf.filename:
+        raise HTTPException(status_code=400, detail="No PDF filename provided.")
+    if not pdf.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
+
+    temp_dir = Path(tempfile.mkdtemp(prefix="styled_pdf_"))
+
+    try:
+        input_pdf = temp_dir / Path(pdf.filename).name
+        await save_upload_file(pdf, input_pdf)
+
+        if output_name:
+            desired_name = Path(output_name).name
+        else:
+            desired_name = f"{input_pdf.stem}_styled.pdf"
+
+        if not desired_name.lower().endswith(".pdf"):
+            desired_name = f"{Path(desired_name).stem}.pdf"
+
+        output_pdf = temp_dir / desired_name
+        convert_pdf_to_styled_pdf(input_pdf, output_pdf)
+
+        if not output_pdf.exists():
+            raise HTTPException(status_code=500, detail="Styled PDF output was not created.")
+
+        return FileResponse(
+            path=str(output_pdf),
+            media_type="application/pdf",
+            filename=output_pdf.name,
+            background=BackgroundTask(shutil.rmtree, temp_dir, ignore_errors=True),
+        )
+    except HTTPException:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise
+    except Exception as exc:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
 @app.post("/api/json-to-filled-pdf")
 async def json_to_filled_pdf(
     source_json: UploadFile = File(...),
@@ -799,40 +846,27 @@ async def json_to_filled_pdf(
 
 @app.post("/api/pdf-to-filled-pdf")
 async def pdf_to_filled_pdf(
-    format_pdf: UploadFile = File(...),
+    detail_pdf: UploadFile = File(...),
     target_pdf: UploadFile = File(...),
     output_name: str | None = Form(default=None),
 ) -> FileResponse:
-    if not format_pdf.filename:
-        raise HTTPException(status_code=400, detail="No format PDF filename provided.")
-    if not format_pdf.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed for the format PDF.")
+    if not detail_pdf.filename:
+        raise HTTPException(status_code=400, detail="No detail PDF filename provided.")
+    if not detail_pdf.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed for the detail PDF.")
     if not target_pdf.filename:
-        raise HTTPException(status_code=400, detail="No target PDF filename provided.")
+        raise HTTPException(status_code=400, detail="No styled target PDF filename provided.")
     if not target_pdf.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed for the target PDF.")
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed for the styled target PDF.")
 
-    node_binary = get_node_binary()
     temp_dir = Path(tempfile.mkdtemp(prefix="pdf_fill_"))
 
     try:
-        format_pdf_path = temp_dir / "source" / Path(format_pdf.filename).name
-        target_pdf_path = temp_dir / "target" / Path(target_pdf.filename).name
-        format_json_dir = temp_dir / "source_json"
-        target_json_dir = temp_dir / "target_json"
+        detail_pdf_path = temp_dir / "detail" / Path(detail_pdf.filename).name
+        target_pdf_path = temp_dir / "styled" / Path(target_pdf.filename).name
 
-        await save_upload_file(format_pdf, format_pdf_path)
+        await save_upload_file(detail_pdf, detail_pdf_path)
         await save_upload_file(target_pdf, target_pdf_path)
-
-        format_json_path = convert_pdf_to_json(node_binary, format_pdf_path, format_json_dir)
-        target_json_path = convert_pdf_to_json(node_binary, target_pdf_path, target_json_dir)
-
-        format_json = load_json_file(format_json_path)
-        target_json = load_json_file(target_json_path)
-        merged_json = merge_form_values(format_json, target_json)
-
-        merged_json_path = temp_dir / f"{target_pdf_path.stem}_merged.json"
-        merged_json_path.write_text(json.dumps(merged_json, ensure_ascii=False, indent=2), encoding="utf-8")
 
         if output_name:
             desired_name = Path(output_name).name
@@ -843,12 +877,7 @@ async def pdf_to_filled_pdf(
             desired_name = f"{Path(desired_name).stem}.pdf"
 
         output_pdf = temp_dir / desired_name
-        run_command([
-            node_binary,
-            str(JSON_TO_PDF_SCRIPT),
-            str(merged_json_path),
-            str(output_pdf),
-        ])
+        fill_styled_pdf_from_detail_pdf(detail_pdf_path, target_pdf_path, output_pdf)
 
         if not output_pdf.exists():
             raise HTTPException(status_code=500, detail="Filled PDF output was not created.")
